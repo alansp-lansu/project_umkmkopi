@@ -4,219 +4,79 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    margin: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-        "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-        sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
+@layer base {
+  :root {
+    /* Palette Warna Kopi */
+    --background: 42 25% 96%;
+    --foreground: 25 40% 15%;
+    --card: 35 20% 98%;
+    --card-foreground: 25 40% 15%;
+    --popover: 35 20% 98%;
+    --popover-foreground: 25 40% 15%;
+    --primary: 25 55% 35%;
+    --primary-foreground: 42 25% 96%;
+    --secondary: 35 30% 75%;
+    --secondary-foreground: 25 40% 15%;
+    --muted: 40 20% 88%;
+    --muted-foreground: 25 20% 40%;
+    --accent: 28 60% 55%;
+    --accent-foreground: 42 25% 96%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 35 20% 85%;
+    --input: 35 20% 85%;
+    --ring: 25 55% 35%;
+    --radius: 0.75rem;
 
-code {
-    font-family:
-        source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+    /* Custom Tokens */
+    --coffee-dark: 20 45% 25%;
+    --coffee-medium: 25 55% 35%;
+    --coffee-light: 35 30% 75%;
+    --cream: 42 25% 96%;
+    --mocha: 28 60% 55%;
+
+    --gradient-warm: linear-gradient(135deg, hsl(var(--coffee-medium)) 0%, hsl(var(--mocha)) 100%);
+    --shadow-elegant: 0 4px 20px -4px hsl(var(--coffee-dark) / 0.15);
+    --shadow-hover: 0 8px 30px -6px hsl(var(--coffee-dark) / 0.2);
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    /* Mode Gelap (Opsional) */
+    --background: 20 30% 8%;
+    --foreground: 42 25% 96%;
+    --card: 20 25% 12%;
+    --card-foreground: 42 25% 96%;
+    --popover: 20 25% 12%;
+    --popover-foreground: 42 25% 96%;
+    --primary: 35 30% 75%;
+    --primary-foreground: 20 30% 8%;
+    --secondary: 25 30% 20%;
+    --secondary-foreground: 42 25% 96%;
+    --muted: 25 20% 18%;
+    --muted-foreground: 35 15% 60%;
+    --accent: 28 60% 55%;
+    --accent-foreground: 42 25% 96%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 25 20% 18%;
+    --input: 25 20% 18%;
+    --ring: 35 30% 75%;
+  }
 }
 
 @layer base {
-    :root {
-        /* Coffee-themed color palette - warm browns and creams */
-        --background: 42 25% 96%;  /* Soft cream background */
-        --foreground: 25 40% 15%;  /* Deep espresso brown */
-        
-        --card: 35 20% 98%;  /* Light cream card */
-        --card-foreground: 25 40% 15%;
-        
-        --popover: 35 20% 98%;
-        --popover-foreground: 25 40% 15%;
-        
-        --primary: 25 55% 35%;  /* Rich coffee brown */
-        --primary-foreground: 42 25% 96%;
-        
-        --secondary: 35 30% 75%;  /* Caramel/latte */
-        --secondary-foreground: 25 40% 15%;
-        
-        --muted: 40 20% 88%;  /* Muted cream */
-        --muted-foreground: 25 20% 40%;
-        
-        --accent: 28 60% 55%;  /* Warm caramel accent */
-        --accent-foreground: 42 25% 96%;
-        
-        --destructive: 0 84% 60%;
-        --destructive-foreground: 0 0% 98%;
-        
-        --border: 35 20% 85%;
-        --input: 35 20% 85%;
-        --ring: 25 55% 35%;
-        
-        /* Custom coffee tokens */
-        --coffee-dark: 20 45% 25%;  /* Dark roast */
-        --coffee-medium: 25 55% 35%;  /* Medium roast */
-        --coffee-light: 35 30% 75%;  /* Light caramel */
-        --cream: 42 25% 96%;  /* Cream */
-        --mocha: 28 60% 55%;  /* Mocha accent */
-        
-        /* Gradients */
-        --gradient-coffee: linear-gradient(135deg, hsl(var(--coffee-dark)) 0%, hsl(var(--coffee-medium)) 100%);
-        --gradient-cream: linear-gradient(180deg, hsl(var(--cream)) 0%, hsl(35 20% 92%) 100%);
-        --gradient-warm: linear-gradient(135deg, hsl(var(--coffee-medium)) 0%, hsl(var(--mocha)) 100%);
-        
-        /* Shadows */
-        --shadow-elegant: 0 4px 20px -4px hsl(var(--coffee-dark) / 0.15);
-        --shadow-soft: 0 2px 12px -2px hsl(var(--coffee-dark) / 0.1);
-        --shadow-hover: 0 8px 30px -6px hsl(var(--coffee-dark) / 0.2);
-        
-        /* Animations */
-        --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        
-        --radius: 0.75rem;
-    }
-    
-    .dark {
-        --background: 20 30% 8%;  /* Deep coffee background */
-        --foreground: 42 25% 96%;
-        
-        --card: 20 25% 12%;
-        --card-foreground: 42 25% 96%;
-        
-        --popover: 20 25% 12%;
-        --popover-foreground: 42 25% 96%;
-        
-        --primary: 35 30% 75%;  /* Light caramel in dark mode */
-        --primary-foreground: 20 30% 8%;
-        
-        --secondary: 25 30% 20%;
-        --secondary-foreground: 42 25% 96%;
-        
-        --muted: 25 20% 18%;
-        --muted-foreground: 35 15% 60%;
-        
-        --accent: 28 60% 55%;
-        --accent-foreground: 42 25% 96%;
-        
-        --destructive: 0 62% 30%;
-        --destructive-foreground: 0 0% 98%;
-        
-        --border: 25 20% 18%;
-        --input: 25 20% 18%;
-        --ring: 35 30% 75%;
-    }
-}
-
-@layer base {
-    * {
-        @apply border-border;
-    }
-    body {
-        @apply bg-background text-foreground;
-    }
-    
-    /* Typography */
-    h1, h2, h3, h4, h5, h6 {
-        @apply font-display;
-    }
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground; }
+  h1, h2, h3, h4, h5, h6 { @apply font-display; }
 }
 
 @layer utilities {
-    /* Coffee gradient utilities */
-    .bg-gradient-coffee {
-        background: var(--gradient-coffee);
-    }
-    
-    .bg-gradient-cream {
-        background: var(--gradient-cream);
-    }
-    
-    .bg-gradient-warm {
-        background: var(--gradient-warm);
-    }
-    
-    /* Shadow utilities */
-    .shadow-elegant {
-        box-shadow: var(--shadow-elegant);
-    }
-    
-    .shadow-soft {
-        box-shadow: var(--shadow-soft);
-    }
-    
-    .shadow-hover {
-        box-shadow: var(--shadow-hover);
-    }
-    
-    /* Animation utilities */
-    .transition-smooth {
-        transition: var(--transition-smooth);
-    }
-    
-    /* Font display for headings */
-    .font-display {
-        font-family: 'Playfair Display', serif;
-    }
-}
-
-@layer base {
-    [data-debug-wrapper="true"] {
-        display: contents !important;
-    }
-
-    [data-debug-wrapper="true"] > * {
-        margin-left: inherit;
-        margin-right: inherit;
-        margin-top: inherit;
-        margin-bottom: inherit;
-        padding-left: inherit;
-        padding-right: inherit;
-        padding-top: inherit;
-        padding-bottom: inherit;
-        column-gap: inherit;
-        row-gap: inherit;
-        gap: inherit;
-        border-left-width: inherit;
-        border-right-width: inherit;
-        border-top-width: inherit;
-        border-bottom-width: inherit;
-        border-left-style: inherit;
-        border-right-style: inherit;
-        border-top-style: inherit;
-        border-bottom-style: inherit;
-        border-left-color: inherit;
-        border-right-color: inherit;
-        border-top-color: inherit;
-        border-bottom-color: inherit;
-    }
-}
-
-/* Smooth scroll behavior */
-html {
-    scroll-behavior: smooth;
-}
-
-/* Custom animations */
-@keyframes fade-in-up {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.animate-fade-in-up {
-    animation: fade-in-up 0.6s ease-out;
-}
-
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
-.animate-float {
-    animation: float 3s ease-in-out infinite;
+  .font-display { font-family: 'Playfair Display', serif; }
+  .bg-gradient-warm { background: var(--gradient-warm); }
+  .shadow-elegant { box-shadow: var(--shadow-elegant); }
+  .shadow-hover { box-shadow: var(--shadow-hover); }
+  .transition-smooth { transition: var(--transition-smooth); }
+  .animate-float { animation: float 3s ease-in-out infinite; }
+  .animate-fade-in { animation: fade-in 0.5s ease-out; }
 }

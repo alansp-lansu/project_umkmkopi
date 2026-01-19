@@ -1,11 +1,10 @@
-/* App specific styles */
 .App {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* Smooth transitions for interactive elements */
+/* Smooth transitions */
 button, a {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -15,16 +14,13 @@ button, a {
   width: 10px;
   height: 10px;
 }
-
 ::-webkit-scrollbar-track {
   background: hsl(var(--muted));
 }
-
 ::-webkit-scrollbar-thumb {
   background: hsl(var(--primary));
   border-radius: 5px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--coffee-dark));
 }
