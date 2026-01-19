@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, HashRouter } from 'react-router-dom';
 import { Toaster } from './components/ui/sonner';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
@@ -12,7 +12,7 @@ import Cart from './pages/Cart';
 function App() {
   return (
     <div className="App flex flex-col min-h-screen bg-background text-foreground">
-      <BrowserRouter>
+      <HashRouter>
         <Navbar />
         <main className="flex-1">
           <Routes>
@@ -25,7 +25,7 @@ function App() {
         </main>
         <Footer />
         <Toaster position="top-center" />
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 }
