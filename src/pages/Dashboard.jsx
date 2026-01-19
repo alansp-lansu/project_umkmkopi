@@ -59,7 +59,7 @@ export default function Dashboard() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 relative z-10">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 animate-fade-in">
-              <Badge className="bg-cream/20 text-cream border-cream/30 w-fit">☕ Kopi Premium Nusantara</Badge>
+              <Badge className="-mb-4 inline-block px-4 py-1.5 mb-4 rounded-full bg-[#D4A373] text-white font-bold tracking-wide shadow-sm">☕ Kopi Premium Nusantara</Badge>
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">Nikmati Kopi<br />Berkualitas Tinggi</h1>
               <p className="text-lg sm:text-xl text-cream/90 leading-relaxed">Dari biji pilihan terbaik hingga secangkir kopi sempurna.</p>
               <div className="flex flex-wrap gap-4">
@@ -69,7 +69,7 @@ export default function Dashboard() {
                   </Button>
                 </Link>
                 <Link to="/about">
-                  <Button size="lg" variant="outline" className="border-cream/30 text-cream hover:bg-cream/10">
+                  <Button size="lg" variant="outline" className="bg-cream text-coffee-dark hover:bg-cream/90 shadow-elegant">
                     Pelajari Lebih Lanjut
                   </Button>
                 </Link>

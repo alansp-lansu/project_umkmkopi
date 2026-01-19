@@ -29,6 +29,8 @@ export const Navbar = () => {
     <nav className="sticky top-0 z-50 bg-card/95 backdrop-blur-sm border-b border-border shadow-soft">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
+          
+          {/* BAGIAN KIRI: LOGO */}
           <Link to="/" className="flex items-center gap-2 group">
             <div className="bg-primary p-2 rounded-lg group-hover:scale-105 transition-smooth">
               <Coffee className="h-5 w-5 md:h-6 md:w-6 text-primary-foreground" />
@@ -41,41 +43,49 @@ export const Navbar = () => {
             </div>
           </Link>
 
-          <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link key={link.path} to={link.path}>
-                <Button
-                  variant={isActive(link.path) ? 'default' : 'ghost'}
-                  className="transition-smooth"
-                >
-                  {link.label}
+          {/* BAGIAN KANAN: MENU + CART */}
+          <div className="flex items-center gap-6">
+            
+            {/* Menu Links (Desktop) */}
+            <div className="hidden md:flex items-center gap-1">
+              {navLinks.map((link) => (
+                <Link key={link.path} to={link.path}>
+                  <Button
+                    variant={isActive(link.path) ? 'default' : 'ghost'}
+                    className="transition-smooth"
+                  >
+                    {link.label}
+                  </Button>
+                </Link>
+              ))}
+            </div>
+
+            {/* Cart & Mobile Toggle */}
+            <div className="flex items-center gap-2">
+              <Link to="/cart">
+                <Button variant="outline" size="icon" className="relative">
+                  <ShoppingCart className="h-5 w-5" />
+                  {getCartCount() > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-accent text-accent-foreground text-xs">
+                      {getCartCount()}
+                    </Badge>
+                  )}
                 </Button>
               </Link>
-            ))}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden"
+                onClick={() => setIsOpen(!isOpen)}
+              >
+                {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Link to="/cart">
-              <Button variant="outline" size="icon" className="relative">
-                <ShoppingCart className="h-5 w-5" />
-                {getCartCount() > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-accent text-accent-foreground text-xs">
-                    {getCartCount()}
-                  </Badge>
-                )}
-              </Button>
-            </Link>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
         </div>
 
+        {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
             <div className="flex flex-col gap-2">
