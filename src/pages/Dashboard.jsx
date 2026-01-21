@@ -59,7 +59,7 @@ export default function Dashboard() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 relative z-10">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 animate-fade-in">
-              <Badge className="-mb-4 inline-block px-4 py-1.5 mb-4 rounded-full bg-[#D4A373] text-white font-bold tracking-wide shadow-sm">☕ Kopi Premium Nusantara</Badge>
+              <Badge className="-mb-4 inline-block px-4 py-1.5 mb-4 rounded-full bg-[#C05621] text-white font-bold tracking-wide shadow-sm">☕ Kopi Premium Nusantara</Badge>
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">Nikmati Kopi<br />Berkualitas Tinggi</h1>
               <p className="text-lg sm:text-xl text-cream/90 leading-relaxed">Dari biji pilihan terbaik hingga secangkir kopi sempurna.</p>
               <div className="flex flex-wrap gap-4">
@@ -111,7 +111,7 @@ export default function Dashboard() {
               <Card key={product.id} className="overflow-hidden hover:shadow-hover transition-smooth group">
                 <div className="relative overflow-hidden">
                   <img src={product.image} alt={product.name} className="w-full h-64 object-cover group-hover:scale-105 transition-smooth" />
-                  <Badge className="absolute top-4 left-4 bg-accent text-accent-foreground">{product.badge}</Badge>
+                    <div className="absolute top-4 left-4 bg-[#D4A373] text-white text-xs font-bold px-3 py-1 rounded-full shadow-md border-none">{product.badge}</div>
                 </div>
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">

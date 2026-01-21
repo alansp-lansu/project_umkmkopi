@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
-import { Coffee, ShoppingCart, Menu, X } from 'lucide-react';
+import { ShoppingCart, Menu, X } from 'lucide-react'; // Coffee dihapus karena sudah pakai logo gambar
 import { Badge } from './ui/badge';
 
 export const Navbar = () => {
@@ -26,21 +26,28 @@ export const Navbar = () => {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-card/95 backdrop-blur-sm border-b border-border shadow-soft">
+    <nav className="sticky top-0 z-50 bg-white text-slate-900 border-b border-gray-200 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           
-          {/* BAGIAN KIRI: LOGO */}
+          {/* BAGIAN KIRI: LOGO & NAMA TOKO */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="bg-primary p-2 rounded-lg group-hover:scale-105 transition-smooth">
-              <Coffee className="h-5 w-5 md:h-6 md:w-6 text-primary-foreground" />
-            </div>
+            
+            {/* 1. GAMBAR LOGO */}
+            <img 
+              src="/img/logo1.jpg" 
+              alt="Logo Kopi Nusantara" 
+              className="h-10 w-10 md:h-12 md:w-12 object-contain group-hover:scale-105 transition-smooth" 
+            />
+
+            {/* 2. TEKS NAMA TOKO */}
             <div className="hidden sm:block">
               <span className="font-display text-xl md:text-2xl font-bold text-foreground">
                 Kopi Nusantara
               </span>
               <p className="text-xs text-muted-foreground">Premium Coffee</p>
             </div>
+
           </Link>
 
           {/* BAGIAN KANAN: MENU + CART */}

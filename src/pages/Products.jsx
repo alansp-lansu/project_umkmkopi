@@ -44,7 +44,8 @@ export default function Products() {
             <Card key={product.id} className="group overflow-hidden hover:shadow-hover transition-smooth">
               <div className="relative overflow-hidden h-72">
                 <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-smooth" />
-                <Badge className="absolute top-4 left-4">{product.badge}</Badge>
+                {/* HAPUS <Badge> dan GANTI dengan <div> ini */}
+<div className="absolute top-4 left-4 bg-[#D4A373] text-white text-xs font-bold px-3 py-1 rounded-full shadow-md border-none">{product.badge}</div>
               </div>
               <CardHeader>
                 <CardTitle>{product.name}</CardTitle>
