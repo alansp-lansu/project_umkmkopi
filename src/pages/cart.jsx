@@ -1,70 +1,120 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
-import { Trash2, Plus, Minus, ArrowLeft } from 'lucide-react';
+import { Card, CardContent, CardFooter } from '../components/ui/card';
+import { Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
 export default function Cart() {
-  const [cart, setCart] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
 
+  // 1. Ambil data dari LocalStorage saat halaman dibuka
   useEffect(() => {
-    const loadCart = () => { const data = localStorage.getItem('cart'); if(data) setCart(JSON.parse(data)); };
-    loadCart();
-    window.addEventListener('storage', loadCart);
-    return () => window.removeEventListener('storage', loadCart);
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+      setCartItems(JSON.parse(savedCart));
+    }
   }, []);
 
-  const updateQty = (index, delta) => {
-    const newCart = [...cart];
-    newCart[index].quantity += delta;
-    if(newCart[index].quantity < 1) return;
-    newCart[index].totalPrice = newCart[index].price * newCart[index].quantity * (newCart[index].weight / 250);
-    setCart(newCart);
-    localStorage.setItem('cart', JSON.stringify(newCart));
+  // 2. Fungsi Hapus Barang
+  const removeFromCart = (indexToRemove) => {
+    const updatedCart = cartItems.filter((_, index) => index !== indexToRemove);
+    setCartItems(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    
+    // Beri tahu Navbar supaya angkanya berkurang
+    window.dispatchEvent(new Event('cart-updated'));
+    toast.success("Barang dihapus dari keranjang");
   };
 
-  const remove = (index) => {
-    const newCart = cart.filter((_, i) => i !== index);
-    setCart(newCart);
-    localStorage.setItem('cart', JSON.stringify(newCart));
-    toast.success('Item dihapus');
-    window.dispatchEvent(new Event('storage'));
+  // 3. Hitung Total Bayar
+  const totalPayment = cartItems.reduce((total, item) => total + item.totalPrice, 0);
+
+  // Format Rupiah
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(number);
   };
 
-  const total = cart.reduce((sum, item) => sum + item.totalPrice, 0);
-
-  if (cart.length === 0) return (<div className="min-h-screen py-20 text-center"><h2 className="text-2xl font-bold mb-4">Keranjang Kosong</h2><Link to="/produk"><Button>Belanja Sekarang</Button></Link></div>);
+  // Jika Keranjang Kosong
+  if (cartItems.length === 0) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background text-center px-4">
+        <div className="bg-muted p-6 rounded-full mb-4">
+          <ShoppingBag className="h-12 w-12 text-muted-foreground" />
+        </div>
+        <h2 className="text-2xl font-bold mb-2">Keranjang Belanja Kosong</h2>
+        <p className="text-muted-foreground mb-6">Sepertinya Anda belum memesan kopi apa pun.</p>
+        <Link to="/produk">
+          <Button size="lg">Lihat Katalog Kopi</Button>
+        </Link>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen py-12 container mx-auto px-4">
-      <h1 className="text-3xl font-bold mb-8">Keranjang Belanja</h1>
-      <div className="grid md:grid-cols-3 gap-8">
-        <div className="md:col-span-2 space-y-4">
-          {cart.map((item, i) => (
-            <Card key={i} className="flex flex-row items-center p-4 gap-4">
-              <img src={item.image} className="w-20 h-20 rounded object-cover" alt={item.name}/>
-              <div className="flex-1">
-                <h3 className="font-bold">{item.name}</h3>
-                <p className="text-sm text-muted-foreground">{item.weight}g</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <Button size="icon" variant="outline" className="h-6 w-6" onClick={()=>updateQty(i, -1)}><Minus className="h-3 w-3"/></Button>
-                  <span>{item.quantity}</span>
-                  <Button size="icon" variant="outline" className="h-6 w-6" onClick={()=>updateQty(i, 1)}><Plus className="h-3 w-3"/></Button>
+    <div className="min-h-screen bg-background py-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center mb-8">
+          <Link to="/produk">
+            <Button variant="ghost" className="mr-4"><ArrowLeft className="mr-2 h-4 w-4" /> Kembali</Button>
+          </Link>
+          <h1 className="text-3xl font-display font-bold">Keranjang Saya ({cartItems.length} Item)</h1>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* DAFTAR ITEM (Kiri) */}
+          <div className="lg:col-span-2 space-y-4">
+            {cartItems.map((item, index) => (
+              <Card key={index} className="flex flex-col sm:flex-row items-center p-4 gap-4 hover:shadow-md transition-smooth">
+                {/* Gambar Kecil */}
+                <div className="w-full sm:w-24 h-24 shrink-0 overflow-hidden rounded-md">
+                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                </div>
+                
+                {/* Info Produk */}
+                <div className="flex-1 text-center sm:text-left space-y-1">
+                  <h3 className="font-bold text-lg">{item.name}</h3>
+                  <div className="text-sm text-muted-foreground">
+                    Berat: {item.weight}g | Jumlah: {item.quantity}
+                  </div>
+                  <div className="font-bold text-primary">
+                    {formatRupiah(item.totalPrice)}
+                  </div>
+                </div>
+
+                {/* Tombol Hapus */}
+                <Button 
+                  variant="destructive" 
+                  size="icon" 
+                  onClick={() => removeFromCart(index)}
+                  className="shrink-0"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </Card>
+            ))}
+          </div>
+
+          {/* RINGKASAN PEMBAYARAN (Kanan) */}
+          <div className="lg:col-span-1">
+            <Card className="p-6 sticky top-24">
+              <h3 className="text-xl font-bold mb-4">Ringkasan Belanja</h3>
+              <div className="space-y-2 mb-4 border-b pb-4">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Total Harga</span>
+                  <span className="font-bold">{formatRupiah(totalPayment)}</span>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="font-bold mb-2">Rp {item.totalPrice.toLocaleString('id-ID')}</p>
-                <Button size="icon" variant="ghost" onClick={()=>remove(i)} className="text-red-500"><Trash2 className="h-4 w-4"/></Button>
+              <div className="flex justify-between text-lg font-bold mb-6">
+                <span>Total Bayar</span>
+                <span className="text-primary">{formatRupiah(totalPayment)}</span>
               </div>
+              <Button className="w-full py-6 text-lg font-bold bg-[#2C1810] hover:bg-[#3C2A21]">
+                Checkout Sekarang
+              </Button>
             </Card>
-          ))}
+          </div>
         </div>
-        <Card className="h-fit">
-          <CardHeader><CardTitle>Ringkasan</CardTitle></CardHeader>
-          <CardContent><div className="flex justify-between text-lg font-bold"><span>Total</span><span>Rp {total.toLocaleString('id-ID')}</span></div></CardContent>
-          <CardFooter><Button className="w-full" onClick={() => toast.success('Checkout Berhasil!')}>Checkout</Button></CardFooter>
-        </Card>
       </div>
     </div>
   );

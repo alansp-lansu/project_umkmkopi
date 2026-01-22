@@ -1,72 +1,166 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Star, ShoppingCart, Package } from 'lucide-react';
+import { ShoppingCart, Package } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Products() {
+  const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState('1');
   const [weight, setWeight] = useState('250');
 
-  const products = [
-    { id: 1, name: 'Arabica Gayo', price: 95000, image: 'https://images.unsplash.com/photo-1675306408031-a9aad9f23308?w=800&q=80', description: 'Kopi premium dari dataran tinggi Gayo.', origin: 'Aceh', roast: 'Medium', notes: 'Floral, Citrus', rating: 4.8, badge: 'Best Seller' },
-    { id: 2, name: 'Robusta Lampung', price: 75000, image: 'https://images.unsplash.com/photo-1580933073521-dc49ac0d4e6a?w=800&q=80', description: 'Rasa kuat dengan aroma yang khas.', origin: 'Lampung', roast: 'Dark', notes: 'Earthy, Nutty', rating: 4.6, badge: 'Popular' },
-    { id: 3, name: 'Blend Nusantara', price: 85000, image: 'https://images.pexels.com/photos/1695052/pexels-photo-1695052.jpeg?w=800&q=80', description: 'Perpaduan Arabica dan Robusta.', origin: 'Mix', roast: 'Medium-Dark', notes: 'Caramel', rating: 4.7, badge: 'Special' },
-  ];
+  // Ambil data dari Backend
+  useEffect(() => {
+    fetch('http://localhost:5000/products')
+      .then(res => res.json())
+      .then(data => setProducts(data))
+      .catch(err => console.error("Gagal ambil data:", err));
+  }, []);
 
-  const handleOrderClick = (product) => { setSelectedProduct(product); setQuantity('1'); setWeight('250'); };
+  // Format Rupiah
+  const formatRupiah = (price) => {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
+  };
 
+  // 1. Fungsi Klik Tombol "Pesan Sekarang"
+  const handleOrderClick = (product) => {
+    console.log("Tombol diklik untuk:", product.name); // Cek di Console browser
+    setSelectedProduct(product);
+    setQuantity('1');
+    setWeight('250');
+  };
+
+  // 2. Fungsi Masuk Keranjang + Database
   const handleAddToCart = () => {
     if (!selectedProduct) return;
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const cartItem = { ...selectedProduct, quantity: parseInt(quantity), weight: parseInt(weight), totalPrice: selectedProduct.price * parseInt(quantity) * (parseInt(weight) / 250) };
-    cart.push(cartItem);
-    localStorage.setItem('cart', JSON.stringify(cart));
-    toast.success(`${selectedProduct.name} ditambahkan ke keranjang!`);
-    setSelectedProduct(null);
-    window.dispatchEvent(new Event('storage'));
+
+    // Hitung harga total
+    const calculatedPrice = selectedProduct.price * parseInt(quantity) * (parseInt(weight) / 250);
+
+    // Data untuk Database
+    const orderData = {
+      product_name: selectedProduct.name,
+      quantity: parseInt(quantity),
+      weight: parseInt(weight),
+      total_price: calculatedPrice
+    };
+
+    // A. Simpan ke Database
+    fetch('http://localhost:5000/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData),
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log("Database sukses:", data);
+      toast.success("Pesanan berhasil disimpan!");
+
+      // B. Simpan ke LocalStorage (Untuk Keranjang Navbar)
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const cartItem = { ...selectedProduct, quantity: parseInt(quantity), weight: parseInt(weight), totalPrice: calculatedPrice };
+      cart.push(cartItem);
+      localStorage.setItem('cart', JSON.stringify(cart));
+
+      // C. TERIAK ke Navbar "Hei, Keranjang Berubah!"
+      window.dispatchEvent(new Event('cart-updated'));
+
+      setSelectedProduct(null); // Tutup Pop-up
+    })
+    .catch(err => {
+      console.error(err);
+      toast.error("Gagal menyimpan pesanan");
+    });
   };
 
   return (
     <div className="min-h-screen bg-background py-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Header */}
         <div className="text-center mb-12">
-          <Badge className="mb-4"><Package className="mr-2 h-3 w-3" />Katalog Produk</Badge>
+          <div className="inline-block bg-[#D4A373] text-white px-4 py-1 rounded-full mb-4 font-bold shadow-sm">
+             <Package className="inline mr-2 h-4 w-4" /> Katalog Produk
+          </div>
           <h1 className="font-display text-4xl font-bold mb-4">Koleksi Kopi Premium</h1>
         </div>
+
+        {/* Grid Produk */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {products.map((product) => (
-            <Card key={product.id} className="group overflow-hidden hover:shadow-hover transition-smooth">
-              <div className="relative overflow-hidden h-72">
+            <Card key={product.id} className="group overflow-hidden hover:shadow-hover transition-smooth flex flex-col h-full">
+              
+              <div className="relative overflow-hidden h-72 shrink-0">
                 <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-smooth" />
-                {/* HAPUS <Badge> dan GANTI dengan <div> ini */}
-<div className="absolute top-4 left-4 bg-[#D4A373] text-white text-xs font-bold px-3 py-1 rounded-full shadow-md border-none">{product.badge}</div>
+                {/* Badge Best Seller/Popular */}
+                <div className="absolute top-4 left-4 bg-[#D4A373] text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
+                  {product.badge}
+                </div>
               </div>
+
               <CardHeader>
-                <CardTitle>{product.name}</CardTitle>
-                <CardDescription>{product.origin} | {product.roast}</CardDescription>
+                <div className="flex justify-between items-start">
+                  <CardTitle className="text-xl">{product.name}</CardTitle>
+                  <span className="font-bold text-primary">{formatRupiah(product.price)}</span>
+                </div>
+                <CardDescription className="line-clamp-2 mt-2">{product.description}</CardDescription>
               </CardHeader>
-              <CardFooter>
-                <Button className="w-full" onClick={() => handleOrderClick(product)}><ShoppingCart className="mr-2 h-4 w-4" />Pesan Sekarang</Button>
+
+              {/* Footer tombol ditaruh paling bawah (mt-auto) */}
+              <CardFooter className="mt-auto">
+                <Button className="w-full relative z-20 cursor-pointer" onClick={() => handleOrderClick(product)}>
+                  <ShoppingCart className="mr-2 h-4 w-4" />Pesan Sekarang
+                </Button>
               </CardFooter>
+
             </Card>
           ))}
         </div>
-        <Dialog open={!!selectedProduct} onOpenChange={() => setSelectedProduct(null)}>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Pesan {selectedProduct?.name}</DialogTitle><DialogDescription>Atur jumlah pesanan Anda</DialogDescription></DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2"><Label>Berat (gram)</Label><Select value={weight} onValueChange={setWeight}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="250">250g</SelectItem><SelectItem value="500">500g</SelectItem><SelectItem value="1000">1kg</SelectItem></SelectContent></Select></div>
-              <div className="space-y-2"><Label>Jumlah</Label><Select value={quantity} onValueChange={setQuantity}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="1">1</SelectItem><SelectItem value="2">2</SelectItem><SelectItem value="3">3</SelectItem></SelectContent></Select></div>
-            </div>
-            <DialogFooter><Button onClick={handleAddToCart}>Tambah ke Keranjang</Button></DialogFooter>
-          </DialogContent>
-        </Dialog>
+
+        {/* Dialog Pop-up */}
+        {selectedProduct && (
+            <Dialog open={!!selectedProduct} onOpenChange={(open) => !open && setSelectedProduct(null)}>
+            <DialogContent>
+                <DialogHeader>
+                <DialogTitle>Pesan {selectedProduct.name}</DialogTitle>
+                <DialogDescription>Atur jumlah pesanan Anda</DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                    <Label>Berat (gram)</Label>
+                    <Select value={weight} onValueChange={setWeight}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="250">250g</SelectItem>
+                        <SelectItem value="500">500g</SelectItem>
+                        <SelectItem value="1000">1kg</SelectItem>
+                    </SelectContent>
+                    </Select>
+                </div>
+                <div className="space-y-2">
+                    <Label>Jumlah</Label>
+                    <Select value={quantity} onValueChange={setQuantity}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="1">1</SelectItem>
+                        <SelectItem value="2">2</SelectItem>
+                        <SelectItem value="3">3</SelectItem>
+                    </SelectContent>
+                    </Select>
+                </div>
+                </div>
+                <DialogFooter>
+                <Button onClick={handleAddToCart}>Tambah ke Keranjang</Button>
+                </DialogFooter>
+            </DialogContent>
+            </Dialog>
+        )}
+
       </div>
     </div>
   );

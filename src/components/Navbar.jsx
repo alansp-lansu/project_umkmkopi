@@ -1,20 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // 1. Tambah useEffect
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
-import { ShoppingCart, Menu, X } from 'lucide-react'; // Coffee dihapus karena sudah pakai logo gambar
+import { ShoppingCart, Menu, X } from 'lucide-react';
 import { Badge } from './ui/badge';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  const getCartCount = () => {
+  // --- BAGIAN BARU (LOGIKA UPDATE OTOMATIS) ---
+  const [cartCount, setCartCount] = useState(0);
+
+  const updateCartCount = () => {
     const cartData = localStorage.getItem('cart');
     if (cartData) {
-      return JSON.parse(cartData).length;
+      setCartCount(JSON.parse(cartData).length);
+    } else {
+      setCartCount(0);
     }
-    return 0;
   };
+
+  useEffect(() => {
+    // Hitung saat pertama kali load
+    updateCartCount();
+
+    // Pasang "Telinga" untuk mendengar sinyal 'cart-updated'
+    window.addEventListener('cart-updated', updateCartCount);
+
+    // Bersihkan saat komponen ditutup
+    return () => {
+      window.removeEventListener('cart-updated', updateCartCount);
+    };
+  }, []);
+  // ---------------------------------------------
 
   const isActive = (path) => location.pathname === path;
 
@@ -33,7 +51,7 @@ export const Navbar = () => {
           {/* BAGIAN KIRI: LOGO & NAMA TOKO */}
           <Link to="/" className="flex items-center gap-2 group">
             
-            {/* 1. GAMBAR LOGO */}
+            {/* 1. GAMBAR LOGO (Sesuai kodemu: .jpg) */}
             <img 
               src="/img/logo1.jpg" 
               alt="Logo Kopi Nusantara" 
@@ -72,9 +90,10 @@ export const Navbar = () => {
               <Link to="/cart">
                 <Button variant="outline" size="icon" className="relative">
                   <ShoppingCart className="h-5 w-5" />
-                  {getCartCount() > 0 && (
+                  {/* Gunakan state cartCount agar update otomatis */}
+                  {cartCount > 0 && (
                     <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-accent text-accent-foreground text-xs">
-                      {getCartCount()}
+                      {cartCount}
                     </Badge>
                   )}
                 </Button>
