@@ -12,7 +12,7 @@ export default function About() {
   return (
     <div className="min-h-screen bg-background">
       <section className="py-20 bg-gradient-to-br from-coffee-dark via-coffee-medium to-mocha text-primary-foreground text-center">
-        <Badge className="mb-4 bg-cream/20 text-cream">Tentang Kami</Badge>
+         <div className="inline-block px-4 py-1.5 mb-4 rounded-full bg-[#C05621] text-white font-bold tracking-wide shadow-sm text-sm">Tentang Kami</div>
         <h1 className="font-display text-4xl font-bold mb-4">Passion Kami adalah Kopi</h1>
         <p className="max-w-2xl mx-auto px-4">Kopi Nusantara lahir dari kecintaan mendalam terhadap kekayaan alam Indonesia.</p>
       </section>

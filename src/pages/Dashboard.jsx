@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { Coffee, Award, Truck, Star, ArrowRight, Heart } from 'lucide-react';
+import { Coffee, BadgeCheck,Truck, Star, ArrowRight, Heart } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Dashboard() {
@@ -35,7 +35,7 @@ export default function Dashboard() {
 
   const features = [
     { icon: Coffee, title: 'Kualitas Premium', description: 'Biji kopi pilihan terbaik' },
-    { icon: Award, title: 'Bersertifikat', description: 'Standar kualitas internasional' },
+    { icon: BadgeCheck, title: 'Terseritifikasi Halal', description: 'sudah bersertifikat halal' },
     { icon: Truck, title: 'Pengiriman Cepat', description: 'Dikirim fresh dalam 1-2 hari' },
   ];
 
@@ -59,7 +59,7 @@ export default function Dashboard() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 relative z-10">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 animate-fade-in">
-              <Badge className="-mb-4 inline-block px-4 py-1.5 mb-4 rounded-full bg-[#C05621] text-white font-bold tracking-wide shadow-sm">☕ Kopi Premium Nusantara</Badge>
+              <div className="inline-block px-4 py-1.5 mb-4 rounded-full bg-[#C05621] text-white font-bold tracking-wide shadow-sm text-sm">☕ Kopi Premium Nusantara</div>
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">Nikmati Kopi<br />Berkualitas Tinggi</h1>
               <p className="text-lg sm:text-xl text-cream/90 leading-relaxed">Dari biji pilihan terbaik hingga secangkir kopi sempurna.</p>
               <div className="flex flex-wrap gap-4">
@@ -116,10 +116,13 @@ export default function Dashboard() {
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     <span>{product.name}</span>
-                    <div className="flex items-center gap-1 text-accent">
-                      <Star className="h-4 w-4 fill-current" />
-                      <span className="text-sm">4.8</span>
-                    </div>
+                    {/* SOLUSI FINAL: Tarik Sedikit ke Atas */}
+                    <div className="flex items-center gap-1 text-[#D4A373] ">
+                     <Star className="h-4 w-4 fill-current" />
+                     {/* 1. leading-none: Matikan spasi baris
+                       2. mb-[1px]: Memberi ganjalan di bawah, supaya teks NAIK ke atas 1 pixel
+                    */}
+                    <span className="text-sm font-bold leading-none mb-[3px]">4.8</span></div>
                   </CardTitle>
                   <CardDescription>{product.description}</CardDescription>
                 </CardHeader>

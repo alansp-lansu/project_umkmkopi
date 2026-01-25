@@ -55,7 +55,7 @@ export const Navbar = () => {
             <img 
               src="/img/logo1.jpg" 
               alt="Logo Kopi Nusantara" 
-              className="h-10 w-10 md:h-12 md:w-12 object-contain group-hover:scale-105 transition-smooth" 
+              className="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover group-hover:scale-105 transition-smooth"
             />
 
             {/* 2. TEKS NAMA TOKO */}

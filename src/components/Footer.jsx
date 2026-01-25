@@ -11,15 +11,24 @@ export const Footer = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="bg-primary p-2 rounded-lg">
-                <Coffee className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <div>
-                <span className="font-display text-xl font-bold text-foreground">Kopi Nusantara</span>
-                <p className="text-xs text-muted-foreground">Premium Coffee</p>
-              </div>
-            </Link>
+           <Link to="/" className="flex items-center gap-2 group">
+            
+            {/* 1. GAMBAR LOGO (Sesuai kodemu: .jpg) */}
+            <img 
+              src="/img/logo1.jpg" 
+              alt="Logo Kopi Nusantara" 
+              className="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover group-hover:scale-105 transition-smooth"
+            />
+
+            {/* 2. TEKS NAMA TOKO */}
+            <div className="hidden sm:block">
+              <span className="font-display text-xl md:text-2xl font-bold text-foreground">
+                Argo Coffe
+              </span>
+              <p className="text-xs text-muted-foreground">Premium Coffee</p>
+            </div>
+
+          </Link>
             <p className="text-sm text-muted-foreground">
               Menyajikan kopi berkualitas tinggi dari biji pilihan terbaik nusantara.
             </p>
@@ -38,11 +47,11 @@ export const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 text-primary mt-0.5" />
-                <span className="text-sm text-muted-foreground">Jl. Kopi Raya No. 123<br />Jakarta, Indonesia</span>
+                <span className="text-sm text-muted-foreground">Jl. Argo Mulyo, Kec. Batu Ketulis,<br /> Lampung Barat, Lampung</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-primary" />
-                <span className="text-sm text-muted-foreground">+62 812-3456-7890</span>
+                <span className="text-sm text-muted-foreground">+62 822-3155-8903</span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-primary" />
