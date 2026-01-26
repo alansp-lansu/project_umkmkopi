@@ -61,7 +61,7 @@ export const Navbar = () => {
             {/* 2. TEKS NAMA TOKO */}
             <div className="hidden sm:block">
               <span className="font-display text-xl md:text-2xl font-bold text-foreground">
-                Kopi Nusantara
+              Argo Coffe
               </span>
               <p className="text-xs text-muted-foreground">Premium Coffee</p>
             </div>

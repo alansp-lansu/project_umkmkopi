@@ -54,12 +54,5 @@ app.post('/orders', (req, res) => {
         res.json({ message: "Pesanan berhasil disimpan!", orderId: result.insertId });
     });
 });
-const express = require('express');
-const cors = require('cors'); // 👈 1. Import ini
-const app = express();
 
-app.use(cors()); // 👈 2. Tambahkan baris ini (sebelum route lain)
-app.use(express.json());
-
-// ... codingan route kamu di bawah sini ...
 // ... app.listen ada di bawah sini ...

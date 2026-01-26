@@ -15,8 +15,8 @@ export default function Contact() {
       <div className="text-center mb-12"><h1 className="font-display text-4xl font-bold">Hubungi Kami</h1></div>
       <div className="grid md:grid-cols-2 gap-8">
         <div className="space-y-6">
-          <Card><CardHeader><CardTitle className="flex items-center gap-2"><MapPin className="text-primary"/> Alamat</CardTitle></CardHeader><CardContent>Jl. Kopi Raya No. 123, Jakarta</CardContent></Card>
-          <Card><CardHeader><CardTitle className="flex items-center gap-2"><Phone className="text-primary"/> Telepon</CardTitle></CardHeader><CardContent>+62 812-3456-7890</CardContent></Card>
+          <Card><CardHeader><CardTitle className="flex items-center gap-2"><MapPin className="text-primary"/> Alamat</CardTitle></CardHeader><CardContent>Jl. Argo Mulyo, Kec. Batu Ketulis</CardContent></Card>
+          <Card><CardHeader><CardTitle className="flex items-center gap-2"><Phone className="text-primary"/> Telepon</CardTitle></CardHeader><CardContent>+62 822-3155-8903</CardContent></Card>
           <Card><CardHeader><CardTitle className="flex items-center gap-2"><Mail className="text-primary"/> Email</CardTitle></CardHeader><CardContent>info@kopinusantara.com</CardContent></Card>
         </div>
         <Card>

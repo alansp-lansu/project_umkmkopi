@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { Coffee, Award, Users, Heart } from 'lucide-react';
+import { Coffee,BadgeCheck, Users, Heart } from 'lucide-react';
 
 export default function About() {
   const values = [
     { icon: Coffee, title: 'Kualitas Premium', desc: 'Kami hanya memilih biji kopi terbaik.' },
-    { icon: Award, title: 'Standar Internasional', desc: 'Memenuhi standar kualitas tinggi.' },
+    { icon: BadgeCheck, title: 'Terseritifikasi Halal', desc: 'sudah bersertifikat halal' },
     { icon: Heart, title: 'Pelayanan Terbaik', desc: 'Melayani dari hati untuk Anda.' },
   ];
 

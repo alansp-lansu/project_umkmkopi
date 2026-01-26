@@ -55,7 +55,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen">
       <section className="relative bg-gradient-to-br from-coffee-dark via-coffee-medium to-mocha text-primary-foreground overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1532713107108-dfb5d8d2fc42?w=1920&q=80')] bg-cover bg-center opacity-20"></div>
+        <div className="absolute inset-0 bg-[url('/img/fotoproduk.jpg')] bg-cover bg-center opacity-20"></div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 relative z-10">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 animate-fade-in">
@@ -76,7 +76,11 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="hidden md:block">
-              <img src="https://images.unsplash.com/photo-1608552265232-3a1e3feb0271?w=800&q=80" alt="Coffee brewing" className="rounded-2xl shadow-hover animate-float" />
+             <img 
+  src="/img/fotoproduk.jpg" 
+  alt="Coffee brewing" 
+  className=" w-96 h-auto ml-20 rounded-2xl shadow-hover animate-float" 
+/>
             </div>
           </div>
         </div>
