@@ -1,38 +1,39 @@
-import { useState, useEffect } from 'react'; // 1. Tambah useEffect
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Button } from './ui/button';
+import { Button } from './ui/button'; // Pastikan path ini benar sesuai struktur foldermu
+import { Badge } from './ui/badge';   // Pastikan path ini benar sesuai struktur foldermu
 import { ShoppingCart, Menu, X } from 'lucide-react';
-import { Badge } from './ui/badge';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0); // State untuk angka merah
   const location = useLocation();
 
-  // --- BAGIAN BARU (LOGIKA UPDATE OTOMATIS) ---
-  const [cartCount, setCartCount] = useState(0);
-
+  // --- 1. LOGIKA UPDATE KERANJANG (WAITING LISTENER) ---
   const updateCartCount = () => {
-    const cartData = localStorage.getItem('cart');
-    if (cartData) {
-      setCartCount(JSON.parse(cartData).length);
-    } else {
-      setCartCount(0);
-    }
+    // Ambil data dari LocalStorage
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    
+    // Hitung total item (Menggunakan reduce agar jumlah quantity juga terhitung)
+    // Contoh: Beli 2 bungkus kopi -> Angka jadi 2 (bukan 1)
+    const total = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+    
+    setCartCount(total);
   };
 
   useEffect(() => {
-    // Hitung saat pertama kali load
+    // Cek saat pertama kali web dibuka
     updateCartCount();
 
-    // Pasang "Telinga" untuk mendengar sinyal 'cart-updated'
+    // Pasang "Telinga" untuk mendengar teriakan 'cart-updated' dari halaman Produk
     window.addEventListener('cart-updated', updateCartCount);
 
-    // Bersihkan saat komponen ditutup
+    // Bersihkan telinga saat pindah halaman (Cleanup)
     return () => {
       window.removeEventListener('cart-updated', updateCartCount);
     };
   }, []);
-  // ---------------------------------------------
+  // -----------------------------------------------------
 
   const isActive = (path) => location.pathname === path;
 
@@ -51,17 +52,17 @@ export const Navbar = () => {
           {/* BAGIAN KIRI: LOGO & NAMA TOKO */}
           <Link to="/" className="flex items-center gap-2 group">
             
-            {/* 1. GAMBAR LOGO (Sesuai kodemu: .jpg) */}
+            {/* Logo Bulat */}
             <img 
               src="/img/logo1.jpg" 
-              alt="Logo Kopi Nusantara" 
+              alt="Logo Argo Coffe" 
               className="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover group-hover:scale-105 transition-smooth"
             />
 
-            {/* 2. TEKS NAMA TOKO */}
+            {/* Nama Toko */}
             <div className="hidden sm:block">
               <span className="font-display text-xl md:text-2xl font-bold text-foreground">
-              Argo Coffe
+                Argo Coffe
               </span>
               <p className="text-xs text-muted-foreground">Premium Coffee</p>
             </div>
@@ -90,14 +91,18 @@ export const Navbar = () => {
               <Link to="/cart">
                 <Button variant="outline" size="icon" className="relative">
                   <ShoppingCart className="h-5 w-5" />
-                  {/* Gunakan state cartCount agar update otomatis */}
-                  {cartCount > 0 && (
-                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-accent text-accent-foreground text-xs">
-                      {cartCount}
-                    </Badge>
+                  
+                  {/* 👇 INI KODINGAN ANGKA MERAHNYA */}
+               {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full animate-bounce">
+                 {cartCount}
+               </span>
                   )}
+                  
                 </Button>
               </Link>
+              
+              {/* Tombol Menu Mobile (Hamburger) */}
               <Button
                 variant="ghost"
                 size="icon"
@@ -111,7 +116,7 @@ export const Navbar = () => {
 
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu Dropdown */}
         {isOpen && (
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
             <div className="flex flex-col gap-2">

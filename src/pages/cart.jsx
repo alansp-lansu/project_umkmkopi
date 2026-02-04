@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardFooter } from '../components/ui/card';
 import { Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // 1. Tambah useNavigate
 import { toast } from 'sonner';
 
 export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
+  const navigate = useNavigate(); // 2. Aktifkan fitur navigasi
 
   // 1. Ambil data dari LocalStorage saat halaman dibuka
   useEffect(() => {
@@ -109,9 +110,15 @@ export default function Cart() {
                 <span>Total Bayar</span>
                 <span className="text-primary">{formatRupiah(totalPayment)}</span>
               </div>
-              <Button className="w-full py-6 text-lg font-bold bg-[#2C1810] hover:bg-[#3C2A21]">
+              
+              {/* 3. TOMBOL CHECKOUT (Sudah Diperbaiki) */}
+              <Button 
+                onClick={() => navigate('/checkout')} 
+                className="w-full py-6 text-lg font-bold bg-[#2C1810] hover:bg-[#3C2A21]"
+              >
                 Checkout Sekarang
               </Button>
+              
             </Card>
           </div>
         </div>

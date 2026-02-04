@@ -22,14 +22,20 @@ export default function Products() {
       .catch(err => console.error("Gagal ambil data:", err));
   }, []);
 
-  // Format Rupiah
+  // --- FORMAT RUPIAH (YANG SUDAH DIPERBAIKI) ---
   const formatRupiah = (price) => {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
+    return new Intl.NumberFormat('id-ID', { 
+      style: 'currency', 
+      currency: 'IDR',
+      minimumFractionDigits: 0, // Hapus angka di belakang koma
+      maximumFractionDigits: 0  // Hapus angka di belakang koma
+    }).format(price);
   };
+  // ---------------------------------------------
 
   // 1. Fungsi Klik Tombol "Pesan Sekarang"
   const handleOrderClick = (product) => {
-    console.log("Tombol diklik untuk:", product.name); // Cek di Console browser
+    console.log("Tombol diklik untuk:", product.name);
     setSelectedProduct(product);
     setQuantity('1');
     setWeight('250');
@@ -63,7 +69,16 @@ export default function Products() {
 
       // B. Simpan ke LocalStorage (Untuk Keranjang Navbar)
       const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      const cartItem = { ...selectedProduct, quantity: parseInt(quantity), weight: parseInt(weight), totalPrice: calculatedPrice };
+      
+      // Cek apakah produk yang sama dengan berat yang sama sudah ada (Opsional, biar rapi)
+      // Kalau mau simpel tumpuk saja (seperti kodinganmu sebelumnya), pakai cara ini:
+      const cartItem = { 
+        ...selectedProduct, 
+        quantity: parseInt(quantity), 
+        weight: parseInt(weight), 
+        totalPrice: calculatedPrice 
+      };
+      
       cart.push(cartItem);
       localStorage.setItem('cart', JSON.stringify(cart));
 
@@ -106,8 +121,9 @@ export default function Products() {
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-xl">{product.name}</CardTitle>
-                 <span className="font-bold text-primary">
-                   {product.displayPrice ? product.displayPrice : formatRupiah(product.price)}
+                  <span className="font-bold text-primary">
+                    {/* Cek apakah ada displayPrice (Range Harga) atau Harga Biasa */}
+                    {product.displayPrice ? product.displayPrice : formatRupiah(product.price)}
                   </span>
                 </div>
                 <CardDescription className="line-clamp-2 mt-2">{product.description}</CardDescription>
