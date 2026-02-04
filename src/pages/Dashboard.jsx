@@ -9,26 +9,26 @@ export default function Dashboard() {
   const featuredProducts = [
     { 
       id: 1, 
-      name: 'Arabica Gayo', 
+      name: 'Roasting Coffe', 
       price: 95000, 
-      image: 'https://images.unsplash.com/photo-1675306408031-a9aad9f23308?w=800&q=80', 
-      description: 'Kopi premium dari dataran tinggi Gayo', 
+      image: '/img/robusta.jpg', 
+      description: 'Kopi yang sudah di roasting dengan ahlinya', 
       badge: 'Best Seller' 
     },
     { 
       id: 2, 
-      name: 'Robusta Lampung', 
+      name: 'Green Beens', 
       price: 75000, 
-      image: 'https://images.unsplash.com/photo-1580933073521-dc49ac0d4e6a?w=800&q=80', 
-      description: 'Rasa kuat dengan aroma yang khas', 
+      image: '/img/beens.webp', 
+      description: 'kopi yang masih berupa green beens', 
       badge: 'Popular' 
     },
     { 
       id: 3, 
-      name: 'Blend Nusantara', 
+      name: 'Kopi Largos', 
       price: 85000, 
       image: 'https://images.pexels.com/photos/1695052/pexels-photo-1695052.jpeg?w=800&q=80', 
-      description: 'Perpaduan sempurna arabica dan robusta', 
+      description: 'Perpaduan sempurna antara kopi di liwargomulyoSukamaju', 
       badge: 'Special' 
     },
   ];

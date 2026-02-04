@@ -106,7 +106,9 @@ export default function Products() {
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-xl">{product.name}</CardTitle>
-                  <span className="font-bold text-primary">{formatRupiah(product.price)}</span>
+                 <span className="font-bold text-primary">
+                   {product.displayPrice ? product.displayPrice : formatRupiah(product.price)}
+                  </span>
                 </div>
                 <CardDescription className="line-clamp-2 mt-2">{product.description}</CardDescription>
               </CardHeader>

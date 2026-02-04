@@ -11,26 +11,29 @@ app.use(express.json());
 const productsData = [
   { 
     id: 1, 
-    name: "Kopi Arabika Gayo", 
-    price: 75000, 
-    image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&q=80&w=1000",
-    description: "Kopi dengan aroma fruity yang kuat dan tingkat keasaman yang seimbang.",
+    name: "Kopi bubuk 250g-1kg", 
+    price: 33000-130000, 
+    displayPrice: "Rp 33.000 - Rp 130.000",
+    image: "/img/1kg.webp",
+    description: "bubuk argo coffee 100% murni tanpa campuran", 
     badge: "Best Seller"
   },
   { 
     id: 2, 
-    name: "Robusta Lampung", 
-    price: 60000, 
-    image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=1000",
-    description: "Kopi strong dengan body tebal dan rasa coklat pahit yang nikmat.",
+    name: "Biji kopi robusta 1kg", 
+    price: 80000, 
+    displayPrice: null,
+    image: "/img/greenbeens.webp",
+    description: "Biji kopi robusta asli kopi lokal lampung barat",
     badge: "Terlaris"
   },
   { 
     id: 3, 
-    name: "Espresso House Blend", 
-    price: 85000, 
-    image: "https://images.unsplash.com/photo-1512568400610-62da28bc8a13?auto=format&fit=crop&q=80&w=1000",
-    description: "Campuran Arabika & Robusta khusus untuk mesin espresso.",
+    name: "biji kopi roasting 1kg",
+    price: 130000, 
+    displayPrice: null,
+    image: "/img/roasting.webp",
+    description: "biji kopi yang sudah di roasting",
     badge: "Baru"
   }
 ];
