@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button';
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
@@ -9,88 +8,85 @@ import { ShoppingCart, Package } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Products() {
-  const [products, setProducts] = useState([]);
+  // --- 1. DATA PRODUK MANUAL (STATIC) ---
+  // Kita tulis langsung di sini supaya muncul di Vercel tanpa Backend
+  const [products] = useState([
+    { 
+      id: 1, 
+      name: "Kopi Bubuk Robusta", 
+      price: 33000, 
+      displayPrice: "Rp 33.000 - Rp 130.000",
+      image: "/img/1kg.webp",
+      description: "Argo Coffee merupakan brand kopi bubuk yang berasal dari Lampung Barat. 100% murni tanpa campuran.",
+      badge: "Best Seller"
+    },
+    { 
+      id: 2, 
+      name: "Biji Kopi Robusta 1kg", 
+      price: 80000, 
+      image: "/img/greenbeens.webp",
+      description: "Biji kopi robusta asli kopi lokal Lampung Barat.",
+      badge: "Terlaris"
+    },
+    { 
+      id: 3, 
+      name: "Biji Kopi Roasting 1kg", 
+      price: 130000, 
+      image: "/img/roasting.webp", // Pastikan nama file ini benar di folder public
+      description: "Biji kopi pilihan yang sudah di-roasting dengan tingkat kematangan sempurna.",
+      badge: "Baru"
+    }
+  ]);
+
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState('1');
   const [weight, setWeight] = useState('250');
 
-  // Ambil data dari Backend
-  useEffect(() => {
-    fetch('http://localhost:5000/products')
-      .then(res => res.json())
-      .then(data => setProducts(data))
-      .catch(err => console.error("Gagal ambil data:", err));
-  }, []);
-
-  // --- FORMAT RUPIAH (YANG SUDAH DIPERBAIKI) ---
+  // --- FORMAT RUPIAH (Tanpa ,00) ---
   const formatRupiah = (price) => {
     return new Intl.NumberFormat('id-ID', { 
       style: 'currency', 
       currency: 'IDR',
-      minimumFractionDigits: 0, // Hapus angka di belakang koma
-      maximumFractionDigits: 0  // Hapus angka di belakang koma
+      minimumFractionDigits: 0, 
+      maximumFractionDigits: 0  
     }).format(price);
   };
-  // ---------------------------------------------
 
-  // 1. Fungsi Klik Tombol "Pesan Sekarang"
   const handleOrderClick = (product) => {
-    console.log("Tombol diklik untuk:", product.name);
     setSelectedProduct(product);
     setQuantity('1');
     setWeight('250');
   };
 
-  // 2. Fungsi Masuk Keranjang + Database
+  // --- FUNGSI MASUK KERANJANG (Hanya LocalStorage) ---
   const handleAddToCart = () => {
     if (!selectedProduct) return;
 
     // Hitung harga total
     const calculatedPrice = selectedProduct.price * parseInt(quantity) * (parseInt(weight) / 250);
 
-    // Data untuk Database
-    const orderData = {
-      product_name: selectedProduct.name,
-      quantity: parseInt(quantity),
-      weight: parseInt(weight),
-      total_price: calculatedPrice
+    // 1. Simpan ke LocalStorage (Browser Memory)
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    
+    // Cek apakah produk sama sudah ada (opsional, tumpuk aja biar gampang)
+    const newItem = { 
+      ...selectedProduct, 
+      quantity: parseInt(quantity), 
+      weight: parseInt(weight), 
+      totalPrice: calculatedPrice 
     };
+    
+    cart.push(newItem);
+    localStorage.setItem('cart', JSON.stringify(cart));
 
-    // A. Simpan ke Database
-    fetch('http://localhost:5000/orders', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(orderData),
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log("Database sukses:", data);
-      toast.success("Pesanan berhasil disimpan!");
+    // 2. TERIAK ke Navbar
+    window.dispatchEvent(new Event('cart-updated'));
 
-      // B. Simpan ke LocalStorage (Untuk Keranjang Navbar)
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      
-      // Cek apakah produk yang sama dengan berat yang sama sudah ada (Opsional, biar rapi)
-      // Kalau mau simpel tumpuk saja (seperti kodinganmu sebelumnya), pakai cara ini:
-      const cartItem = { 
-        ...selectedProduct, 
-        quantity: parseInt(quantity), 
-        weight: parseInt(weight), 
-        totalPrice: calculatedPrice 
-      };
-      
-      cart.push(cartItem);
-      localStorage.setItem('cart', JSON.stringify(cart));
+    // 3. Notifikasi Sukses
+    toast.success("Berhasil masuk keranjang!");
+    setSelectedProduct(null);
 
-      // C. TERIAK ke Navbar "Hei, Keranjang Berubah!"
-      window.dispatchEvent(new Event('cart-updated'));
-
-      setSelectedProduct(null); // Tutup Pop-up
-    })
-    .catch(err => {
-      console.error(err);
-      toast.error("Gagal menyimpan pesanan");
-    });
+    // Catatan: Fetch ke backend saya hapus dulu supaya tidak error di Vercel
   };
 
   return (
@@ -111,8 +107,8 @@ export default function Products() {
             <Card key={product.id} className="group overflow-hidden hover:shadow-hover transition-smooth flex flex-col h-full">
               
               <div className="relative overflow-hidden h-72 shrink-0">
+                {/* Pastikan gambar ada di folder public/img/ */}
                 <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-smooth" />
-                {/* Badge Best Seller/Popular */}
                 <div className="absolute top-4 left-4 bg-[#D4A373] text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
                   {product.badge}
                 </div>
@@ -122,14 +118,12 @@ export default function Products() {
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-xl">{product.name}</CardTitle>
                   <span className="font-bold text-primary">
-                    {/* Cek apakah ada displayPrice (Range Harga) atau Harga Biasa */}
                     {product.displayPrice ? product.displayPrice : formatRupiah(product.price)}
                   </span>
                 </div>
                 <CardDescription className="line-clamp-2 mt-2">{product.description}</CardDescription>
               </CardHeader>
 
-              {/* Footer tombol ditaruh paling bawah (mt-auto) */}
               <CardFooter className="mt-auto">
                 <Button className="w-full relative z-20 cursor-pointer" onClick={() => handleOrderClick(product)}>
                   <ShoppingCart className="mr-2 h-4 w-4" />Pesan Sekarang
