@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { Coffee, BadgeCheck, Truck, Star, ArrowRight, Heart } from 'lucide-react';
+import { Coffee, BadgeCheck, Truck, ArrowRight, Heart } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Dashboard() {
@@ -39,30 +39,41 @@ export default function Dashboard() {
     { icon: Truck, title: 'Pengiriman Cepat', description: 'Dikirim fresh dalam 1-2 hari' },
   ];
 
-  // --- FUNGSI TAMBAH KE KERANJANG (YANG DIPERBAIKI) ---
+  // --- FORMAT RUPIAH ---
+  const formatRupiah = (price) => {
+    return new Intl.NumberFormat('id-ID', { 
+      style: 'currency', 
+      currency: 'IDR',
+      minimumFractionDigits: 0, 
+      maximumFractionDigits: 0  
+    }).format(price);
+  };
+
+  // --- FUNGSI TAMBAH KE KERANJANG ---
   const addToCart = (product) => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     const existingItem = cart.find(item => item.id === product.id);
 
+    // LOGIKA BERAT:
+    // ID 1 (Roasting) & ID 2 (Green Beans) & ID 3 (Largos) -> SEMUANYA 1KG (1000g)
+    let finalWeight = 1000; 
+    let finalPrice = product.price;
+
+    // Jika user menambah barang yang sama, update jumlahnya
     if (existingItem) { 
       existingItem.quantity += 1; 
-      // Update total harga jika jumlah bertambah
-      existingItem.totalPrice = existingItem.price * existingItem.quantity;
+      existingItem.totalPrice = existingItem.price * existingItem.quantity; 
     } else { 
-      // Default beli 1 pcs berat 250g
       cart.push({ 
         ...product, 
         quantity: 1, 
-        weight: 250, 
-        totalPrice: product.price 
+        weight: finalWeight, 
+        totalPrice: finalPrice 
       }); 
     }
 
     localStorage.setItem('cart', JSON.stringify(cart));
-    
-    // 🔥 PENTING: Mengirim sinyal 'cart-updated' agar Navbar mendengar
-    window.dispatchEvent(new Event('cart-updated'));
-    
+    window.dispatchEvent(new Event('cart-updated')); // Sinyal ke Navbar
     toast.success(`${product.name} ditambahkan ke keranjang!`);
   };
 
@@ -136,21 +147,19 @@ export default function Dashboard() {
                 </div>
                 
                 <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
+                  <CardTitle>
                     <span>{product.name}</span>
-                    <div className="flex items-center gap-1 text-[#D4A373]">
-                      <Star className="h-4 w-4 fill-current" />
-                      <span className="text-sm font-bold leading-none mb-[3px]">4.8</span>
-                    </div>
                   </CardTitle>
                   <CardDescription className="line-clamp-2">{product.description}</CardDescription>
                 </CardHeader>
                 
-                {/* Bagian Footer ditaruh di bawah (mt-auto) agar tombol sejajar */}
                 <CardFooter className="flex flex-col gap-3 mt-auto">
                   <div className="flex items-center justify-between w-full">
-                    <span className="text-2xl font-bold text-primary">Rp {product.price.toLocaleString('id-ID')}</span>
-                    <span className="text-sm text-muted-foreground">/250g</span>
+                    <span className="text-2xl font-bold text-primary">{formatRupiah(product.price)}</span>
+                    <span className="text-sm text-muted-foreground">
+                        {/* Logic Tampilan: Semua produk unggulan di Dashboard ditampilkan sebagai /1kg */}
+                        /1kg
+                    </span>
                   </div>
                   <Button className="w-full cursor-pointer" onClick={() => addToCart(product)}>
                     <Heart className="mr-2 h-4 w-4" />Tambah ke Keranjang

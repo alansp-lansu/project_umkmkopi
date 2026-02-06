@@ -9,12 +9,11 @@ import { toast } from 'sonner';
 
 export default function Products() {
   // --- 1. DATA PRODUK MANUAL (STATIC) ---
-  // Kita tulis langsung di sini supaya muncul di Vercel tanpa Backend
   const [products] = useState([
     { 
       id: 1, 
       name: "Kopi Bubuk Robusta", 
-      price: 33000, 
+      price: 33000, // Ini harga untuk 250g
       displayPrice: "Rp 33.000 - Rp 130.000",
       image: "/img/1kg.webp",
       description: "Argo Coffee merupakan brand kopi bubuk yang berasal dari Lampung Barat. 100% murni tanpa campuran.",
@@ -23,7 +22,7 @@ export default function Products() {
     { 
       id: 2, 
       name: "Biji Kopi Robusta 1kg", 
-      price: 80000, 
+      price: 80000, // Ini harga SUDAH untuk 1kg
       image: "/img/greenbeens.webp",
       description: "Biji kopi robusta asli kopi lokal Lampung Barat.",
       badge: "Terlaris"
@@ -31,8 +30,8 @@ export default function Products() {
     { 
       id: 3, 
       name: "Biji Kopi Roasting 1kg", 
-      price: 130000, 
-      image: "/img/roasting.webp", // Pastikan nama file ini benar di folder public
+      price: 130000, // Ini harga SUDAH untuk 1kg
+      image: "/img/roasting.webp", 
       description: "Biji kopi pilihan yang sudah di-roasting dengan tingkat kematangan sempurna.",
       badge: "Baru"
     }
@@ -42,7 +41,7 @@ export default function Products() {
   const [quantity, setQuantity] = useState('1');
   const [weight, setWeight] = useState('250');
 
-  // --- FORMAT RUPIAH (Tanpa ,00) ---
+  // --- FORMAT RUPIAH ---
   const formatRupiah = (price) => {
     return new Intl.NumberFormat('id-ID', { 
       style: 'currency', 
@@ -55,20 +54,42 @@ export default function Products() {
   const handleOrderClick = (product) => {
     setSelectedProduct(product);
     setQuantity('1');
-    setWeight('250');
+    
+    // Logika Otomatis Pilih Berat:
+    // Kalau ID 2 atau 3 (Biji Kopi), set default berat ke 1kg (1000g) biar user gak bingung
+    if (product.id === 2 || product.id === 3) {
+        setWeight('1000');
+    } else {
+        setWeight('250');
+    }
   };
 
-  // --- FUNGSI MASUK KERANJANG (Hanya LocalStorage) ---
+  // --- FUNGSI MASUK KERANJANG (LOGIKA HARGA DIPERBAIKI) ---
   const handleAddToCart = () => {
     if (!selectedProduct) return;
 
-    // Hitung harga total
-    const calculatedPrice = selectedProduct.price * parseInt(quantity) * (parseInt(weight) / 250);
+    let calculatedPrice = 0;
 
-    // 1. Simpan ke LocalStorage (Browser Memory)
+    // === LOGIKA BARU DI SINI ===
+    if (selectedProduct.id === 1) {
+       // Kopi Bubuk (Harga Dasar per 250g)
+       // Rumus: Harga * Jumlah * (Berat / 250)
+       calculatedPrice = selectedProduct.price * parseInt(quantity) * (parseInt(weight) / 250);
+    } 
+    else if (selectedProduct.id === 2 || selectedProduct.id === 3) {
+       // Biji Kopi (Harga Dasar per 1000g / 1kg)
+       // Rumus: (Harga / 1000) * Berat * Jumlah
+       calculatedPrice = (selectedProduct.price / 1000) * parseInt(weight) * parseInt(quantity);
+    }
+    else {
+       // Default (Anggap per 250g)
+       calculatedPrice = selectedProduct.price * parseInt(quantity) * (parseInt(weight) / 250);
+    }
+    // ===========================
+
+    // Simpan ke LocalStorage
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     
-    // Cek apakah produk sama sudah ada (opsional, tumpuk aja biar gampang)
     const newItem = { 
       ...selectedProduct, 
       quantity: parseInt(quantity), 
@@ -79,14 +100,11 @@ export default function Products() {
     cart.push(newItem);
     localStorage.setItem('cart', JSON.stringify(cart));
 
-    // 2. TERIAK ke Navbar
+    // Update Navbar
     window.dispatchEvent(new Event('cart-updated'));
 
-    // 3. Notifikasi Sukses
     toast.success("Berhasil masuk keranjang!");
     setSelectedProduct(null);
-
-    // Catatan: Fetch ke backend saya hapus dulu supaya tidak error di Vercel
   };
 
   return (
@@ -107,7 +125,6 @@ export default function Products() {
             <Card key={product.id} className="group overflow-hidden hover:shadow-hover transition-smooth flex flex-col h-full">
               
               <div className="relative overflow-hidden h-72 shrink-0">
-                {/* Pastikan gambar ada di folder public/img/ */}
                 <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-smooth" />
                 <div className="absolute top-4 left-4 bg-[#D4A373] text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
                   {product.badge}
@@ -140,7 +157,7 @@ export default function Products() {
             <DialogContent>
                 <DialogHeader>
                 <DialogTitle>Pesan {selectedProduct.name}</DialogTitle>
-                <DialogDescription>Atur jumlah pesanan Anda</DialogDescription>
+                <DialogDescription>Atur berat dan jumlah pesanan</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                 <div className="space-y-2">
@@ -148,9 +165,9 @@ export default function Products() {
                     <Select value={weight} onValueChange={setWeight}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="250">250g</SelectItem>
-                        <SelectItem value="500">500g</SelectItem>
-                        <SelectItem value="1000">1kg</SelectItem>
+                        <SelectItem value="250">250g (Kemasan Kecil)</SelectItem>
+                        <SelectItem value="500">500g (Kemasan Sedang)</SelectItem>
+                        <SelectItem value="1000">1kg (Kemasan Besar)</SelectItem>
                     </SelectContent>
                     </Select>
                 </div>
@@ -162,6 +179,8 @@ export default function Products() {
                         <SelectItem value="1">1</SelectItem>
                         <SelectItem value="2">2</SelectItem>
                         <SelectItem value="3">3</SelectItem>
+                        <SelectItem value="4">4</SelectItem>
+                        <SelectItem value="5">5</SelectItem>
                     </SelectContent>
                     </Select>
                 </div>

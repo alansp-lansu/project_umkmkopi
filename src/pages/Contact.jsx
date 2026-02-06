@@ -17,7 +17,7 @@ export default function Contact() {
         <div className="space-y-6">
           <Card><CardHeader><CardTitle className="flex items-center gap-2"><MapPin className="text-primary"/> Alamat</CardTitle></CardHeader><CardContent>Jl. Argo Mulyo, Kec. Batu Ketulis</CardContent></Card>
           <Card><CardHeader><CardTitle className="flex items-center gap-2"><Phone className="text-primary"/> Telepon</CardTitle></CardHeader><CardContent>+62 822-3155-8903</CardContent></Card>
-          <Card><CardHeader><CardTitle className="flex items-center gap-2"><Mail className="text-primary"/> Email</CardTitle></CardHeader><CardContent>info@kopinusantara.com</CardContent></Card>
+          <Card><CardHeader><CardTitle className="flex items-center gap-2"><Mail className="text-primary"/> Email</CardTitle></CardHeader><CardContent>Argocoffee93@gmail.com</CardContent></Card>
         </div>
         <Card>
           <CardContent className="p-6">
